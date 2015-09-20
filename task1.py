@@ -52,7 +52,7 @@ def solveSystem(f1, f2, x0, y0, epsilon, iteration = 0):
     return xi, yi, iteration
 
 print("system")
-print(solveSystem(f1, f2, 0.1, -0.1, 0.000001 ))
+print(solveSystem(f1, f2, 0, 0, 0.00000000001 ))
 
 def f1(x,y):
     return math.sin(x + 0.5) - y - 1
@@ -75,19 +75,16 @@ def delta_x(x,y):
 def delta_y(x,y):
     return (f1(x,y)*df2x(x,y) - df1x(x,y)*f2(x,y))
 
-def newton_system(t, k, delta, delta_t):
-    return t + delta_t(t,k)/delta(t,k)
-
 def newton_solve(f1, f2, x0, y0, epsilon, iteration = 0):
-    x = newton_system(x0,y0, delta, delta_x)
-    y = newton_system(y0,x0, delta, delta_y)
+    x = x0 + delta_x(x0, y0) / delta(x0,y0)
+    y = y0 + delta_y(x0, y0) / delta(x0, y0)
     while abs(x-x0) > epsilon and abs(y-y0) > epsilon:
         iteration += 1
         x0 = x
         y0 = y
-        x = newton_system(x0,y0, delta, delta_x)
-        y = newton_system(x0,y0, delta, delta_y)
+        x = x0 + delta_x(x0,y0) / delta(x0,y0)
+        y = y0 + delta_y(x0, y0) / delta(x0, y0)
     return x, y, iteration
 
 print("newton system")
-print(newton_solve(f1, f2, 0.5, 0.1, 0.0000000000001))
+print(newton_solve(f1, f2, 0.5, 0.1, 0.00000001))
