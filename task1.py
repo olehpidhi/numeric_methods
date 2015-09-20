@@ -41,14 +41,14 @@ def f2(y):
     return -math.cos(y - 2)
 
 def solveSystem(f1, f2, x0, y0, epsilon, iteration = 0):
-    xi = f1(x0)
-    yi = f2(y0)
+    yi = f1(x0)
+    xi = f2(y0)
     while abs(xi - x0) > epsilon and abs(yi - y0) > epsilon:
         iteration += 1
         x0 = xi
         y0 = yi
-        xi = f1(xi)
-        yi = f2(yi)
+        yi = f1(x0)
+        xi = f2(y0)
     return xi, yi, iteration
 
 print("system")
