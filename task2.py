@@ -48,11 +48,33 @@ for i in xrange(0, 31):
     newtonX.append(a + i * h1)
     newton.append(forward_newton(a + i * h1))
 
+n = N // 2
 
-def forwad_gauss(x):
-    
+
+def forward_gauss(x):
+    t = (x - (b-a) / 2.) / h
+    accumulator = finite_differences[0][n]
+    numeratorOdd = t
+    numeratorEven = t * (t-1)
+    i = 1
+    while i <= n:
+        accumulator += (finite_differences[2 * i - 1][n - i + 1] * numeratorOdd) / factorials[i * 2 - 1]
+        accumulator += (finite_differences[2 * i][n - i] * numeratorEven) / factorials[i * 2]
+        numeratorEven *= (t + i - 1) * (t - i + 1)
+        numeratorOdd *= (t + i - 1) * (t - i)
+        i += 1
+    return accumulator
+
+gauss = []
+gaussX = []
+
+for i in xrange(0, 21):
+    gaussX.append(a + i * h)
+    gauss.append(forward_gauss(a + i * h))
+
 
 plt.plot(xValues, data)
 plt.plot(newtonX, newton)
+plt.plot(gaussX, gauss)
 
 plt.show()
