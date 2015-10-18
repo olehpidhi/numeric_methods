@@ -1,5 +1,6 @@
 import numpy as npy
 import matplotlib.pyplot as plt
+import numpy.linalg as linalg
 
 
 def f(x):
@@ -77,4 +78,55 @@ plt.plot(xValues, data)
 plt.plot(newtonX, newton)
 plt.plot(gaussX, gauss)
 
+
+# TASK 3. Least squares method
+def phi(x,i):
+    return x**i;
+
+
+def scalar_phi(i, j):
+    result = 0
+    for k in range(N + 1):
+        result += phi(xValues[k], i) * phi(xValues[k], j)
+    return result
+
+
+def scalar(i):
+    result = 0
+    for k in range(N + 1):
+        result += f(xValues[k]) * phi(xValues[k], i)
+    return result
+
+matrix = []
+for i in range(N + 1):
+    matrix.append([])
+    for j in range(N + 1):
+        matrix[i].append(scalar_phi(i, j))
+b = []
+for i in range(N + 1):
+    b.append(scalar(i))
+
+solution = linalg.solve(matrix, b)
+
+
+def F(x):
+    result = 0
+    for i in xrange(N + 1):
+        result += solution[i] * phi(x,i)
+    return result
+
+FValues = []
+
+for i in xrange(N+1):
+    FValues.append(F(xValues[i]))
+
+
+def Norm(func):
+    result = 0
+    for i in range(N):
+        result += (func(xValues[i + 1]) ** 2 + func(xValues[i]) ** 2) * (xValues[i + 1] - xValues[i]) / 2.
+    return npy.sqrt(result)
+
+print(abs(Norm(f) - Norm(F)))
+plt.plot(xValues, FValues)
 plt.show()
