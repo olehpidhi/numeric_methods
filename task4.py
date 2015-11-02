@@ -5,9 +5,9 @@ import numpy as npy
 def f(x):
     return x * x * npy.cos(x + 1)
 
+N = 20
 a = 0
 b = 2.0
-N = 20
 h = (b - a) / N
 
 xF = []
