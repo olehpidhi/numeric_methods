@@ -17,47 +17,56 @@ for i in range(N + 1):
     yF.append(f(xF[i]))
 
 
-def trapezes(accuracy):
+def trapezes(accuracy, N):
     n = N
-    r = h
-    count = 0
-    while r ** 2 > accuracy:
-        r /= 2
-        n *= 2
-        count += 1
+    n1 = n * 2
+    r = (b-a)/n
+    r1 = r/2
     result = (r / 2) * (f(a) + f(b))
+
     for i in range(1, n):
         result += r * f(a + r * i)
-    return result, count, n
+    result1 = (r1 / 2) * (f(a) + f(b))
+    for i in range(1, n1):
+        result1 += r1 * f(a + r1 * i)
+    if npy.abs((result - result1)/(2 ** 2 - 1)) > accuracy:
+        return trapezes(accuracy, N * 2)
+    return result
 
 
-def rectangles(accuracy):
+def rectangles(accuracy, N):
     result = 0
+    result1 = 0
     n = N
-    r = h
-    count = 0
-    while r ** 2 > accuracy:
-        r /= 2
-        n *= 2
-        count += 1
+    r = (b-a)/n
+    n1 = 2*N
+    r1 = (b-a)/n1
     for i in range(n):
         result += r * f(a + (i + 1 / 2) * r)
-    return result, count, n
+    for i in range(n1):
+        result1 += r1 * f(a + (i + 1 / 2) * r1)
+    if npy.abs((result - result1)/(2 ** 2 - 1)) > accuracy:
+        return rectangles(accuracy, N * 2)
+    return result
 
 
-def simpson(accuracy):
+def simpson(accuracy, N):
     n = N
-    r = h
-    count = 0
-    while r ** 4 > accuracy:
-        r /= 2
-        n *= 2
-        count += 1
+    n1 = 2*n
+    r = (b-a)/n
+    r1 = r/2
     result = f(a) + f(b) + 4 * f(a + r / 2)
     for i in range(1, n):
         result += 2 * f(a + i * r) + 4 * f(a + (i + 1 / 2) * r)
-    result *= r/ 6
-    return result, count, n
+    result *= r / 6
+
+    result1 = f(a) + f(b) + 4 * f(a + r / 2)
+    for i in range(1, n1):
+        result1 += 2 * f(a + i * r1) + 4 * f(a + (i + 1 / 2) * r1)
+    result1 *= r1 / 6
+    if npy.abs((result - result1)/(2 ** 4 - 1)) > accuracy:
+        return simpson(accuracy, N * 2)
+    return result
 
 
 def gauss4():
@@ -88,14 +97,14 @@ def gauss5():
     result *= (b - a) / 2
     return result
 
-epsilon = 0.0000000001
+epsilon = 0.00001
 
 print("Rect")
-print(rectangles(epsilon))
+print(rectangles(epsilon, N))
 print("Trap")
-print(trapezes(epsilon))
+print(trapezes(epsilon, N))
 print("Simpson")
-print(simpson(epsilon))
+print(simpson(epsilon, N))
 print("Gauss4")
 print(gauss4())
 print("Gauss5")
